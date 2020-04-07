@@ -41,7 +41,7 @@ export default {
       }
     },
     clearBoard() {
-      // 清除画布
+      // 重绘画布
       this.canvasDom.clearRect(0, 0, 10000, 10000)
       this.createBoard()
       // 清空数组
