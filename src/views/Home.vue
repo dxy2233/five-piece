@@ -10,7 +10,9 @@ export default {
   data() {
     return {
       status: true, // 黑:true, 白:false
-      canvasDom: ''
+      canvasDom: '',
+      blackPoint: [],
+      whitePoint: []
     }
   },
   mounted() {
@@ -21,22 +23,11 @@ export default {
       let board = document.getElementById('checkerboard')
       let width = board.offsetWidth
       let height = board.offsetHeight
-      // let num =
-      //   width - height > 0 ? Math.floor(height / 30) : Math.floor(width / 30)
       let wNum = Math.floor(width / 30)
       let hNum = Math.floor(height / 30)
-      // let ctx = board.getContext('2d')
       this.canvasDom = board.getContext('2d')
       board.width = width
       board.height = height
-      // for (var i = 0; i < num + 1; i++) {
-      //   ctx.moveTo(i * 30, 0)
-      //   ctx.lineTo(i * 30, 30 * num)
-      //   ctx.stroke()
-      //   ctx.moveTo(0, i * 30)
-      //   ctx.lineTo(30 * num, i * 30)
-      //   ctx.stroke()
-      // }
       this.canvasDom.strokeStyle = '#A9A9A9'
       for (let i = 0; i < wNum + 1; i++) {
         this.canvasDom.moveTo(i * 30, 0)
@@ -49,17 +40,116 @@ export default {
         this.canvasDom.stroke()
       }
     },
+    clearBoard() {
+      // 清除画布
+      this.canvasDom.clearRect(0, 0, 10000, 10000)
+      this.createBoard()
+      // 清空数组
+      this.blackPoint = []
+      this.whitePoint = []
+      this.status = true
+    },
     drop(e) {
+      // 确定点位
       let pointX = Math.floor((e.offsetX + 15) / 30)
       let pointY = Math.floor((e.offsetY + 15) / 30)
+      // 判断是否能落子
+      const isOccupy = [...this.blackPoint, ...this.whitePoint].some(item => {
+        return item.toString() === [pointX, pointY].toString()
+      })
+      if (isOccupy) return
+      // 绘图
       this.canvasDom.beginPath()
       this.status
         ? (this.canvasDom.fillStyle = '#000')
-        : (this.canvasDom.fillStyle = '#DCDCDC')
+        : (this.canvasDom.fillStyle = '#fff')
       this.canvasDom.arc(pointX * 30, pointY * 30, 10, 0, 2 * Math.PI, true)
       this.canvasDom.fill()
       this.canvasDom.closePath()
+      // 胜利判断
+      let curretPoint = this.status ? this.blackPoint : this.whitePoint
+      curretPoint.push([pointX, pointY])
+      if (this.legal(curretPoint, pointX, pointY)) {
+        setTimeout(() => {
+          alert(`${this.status ? '黑' : '白'}子胜！`)
+          this.clearBoard()
+        }, 0)
+        return
+      }
+      // 更改棋子角色
       this.status = !this.status
+    },
+    legal(pointArray, x, y) {
+      if (pointArray.length < 5) return
+      // 横向判断
+      function row() {
+        const rowPoint = pointArray
+          .filter(item => item[1] === y)
+          .map(item => item[0])
+          .sort((a, b) => a - b)
+        if (rowPoint.length < 5) return
+        for (let i = 0; i <= rowPoint.length - 4; i++) {
+          let count = 1
+          for (let j = 1; j < 5; j++) {
+            if (rowPoint[i + j] === rowPoint[i] + j) count = count + 1
+            else break
+          }
+          if (count === 5) return true
+        }
+      }
+      if (row()) return true
+      // 纵向判断
+      function col() {
+        const colPoint = pointArray
+          .filter(item => item[0] === x)
+          .map(item => item[1])
+          .sort((a, b) => a - b)
+        if (colPoint.length < 5) return
+        for (let i = 0; i <= colPoint.length - 4; i++) {
+          let count = 1
+          for (let j = 1; j < 5; j++) {
+            if (colPoint[i + j] === colPoint[i] + j) count = count + 1
+            else break
+          }
+          if (count === 5) return true
+        }
+      }
+      if (col()) return true
+      // 斜下判断
+      function slantDown() {
+        const slantDownPoint = pointArray
+          .filter(item => x - item[0] === y - item[1])
+          .map(item => item[0])
+          .sort((a, b) => a - b)
+        if (slantDownPoint.length < 5) return
+        for (let i = 0; i <= slantDownPoint.length - 4; i++) {
+          let count = 1
+          for (let j = 1; j < 5; j++) {
+            if (slantDownPoint[i + j] === slantDownPoint[i] + j)
+              count = count + 1
+            else break
+          }
+          if (count === 5) return true
+        }
+      }
+      if (slantDown()) return true
+      // 斜上判断
+      function slantUp() {
+        const slantUpPoint = pointArray
+          .filter(item => x - item[0] === -(y - item[1]))
+          .map(item => item[0])
+          .sort((a, b) => a - b)
+        if (slantUpPoint.length < 5) return
+        for (let i = 0; i <= slantUpPoint.length - 4; i++) {
+          let count = 1
+          for (let j = 1; j < 5; j++) {
+            if (slantUpPoint[i + j] === slantUpPoint[i] + j) count = count + 1
+            else break
+          }
+          if (count === 5) return true
+        }
+      }
+      if (slantUp()) return true
     }
   }
 }
@@ -75,6 +165,7 @@ export default {
   #checkerboard {
     width: 100%;
     height: 100%;
+    background: #ff8c00;
   }
 }
 </style>
