@@ -30,13 +30,13 @@ export default {
       board.height = height
       this.canvasDom.strokeStyle = '#A9A9A9'
       for (let i = 0; i < wNum + 1; i++) {
-        this.canvasDom.moveTo(i * 30, 0)
-        this.canvasDom.lineTo(i * 30, 30 * hNum)
+        this.canvasDom.moveTo(i * 30 - 15, 15)
+        this.canvasDom.lineTo(i * 30 - 15, 30 * hNum - 15)
         this.canvasDom.stroke()
       }
       for (let i = 0; i < hNum + 1; i++) {
-        this.canvasDom.moveTo(0, i * 30)
-        this.canvasDom.lineTo(30 * wNum, i * 30)
+        this.canvasDom.moveTo(15, i * 30 - 15)
+        this.canvasDom.lineTo(30 * wNum - 15, i * 30 - 15)
         this.canvasDom.stroke()
       }
     },
@@ -51,8 +51,8 @@ export default {
     },
     drop(e) {
       // 确定点位
-      let pointX = Math.floor((e.offsetX + 15) / 30)
-      let pointY = Math.floor((e.offsetY + 15) / 30)
+      let pointX = Math.floor(e.offsetX / 30)
+      let pointY = Math.floor(e.offsetY / 30)
       // 判断是否能落子
       const isOccupy = [...this.blackPoint, ...this.whitePoint].some(item => {
         return item.toString() === [pointX, pointY].toString()
@@ -63,7 +63,14 @@ export default {
       this.status
         ? (this.canvasDom.fillStyle = '#000')
         : (this.canvasDom.fillStyle = '#fff')
-      this.canvasDom.arc(pointX * 30, pointY * 30, 10, 0, 2 * Math.PI, true)
+      this.canvasDom.arc(
+        15 + pointX * 30,
+        15 + pointY * 30,
+        10,
+        0,
+        2 * Math.PI,
+        true
+      )
       this.canvasDom.fill()
       this.canvasDom.closePath()
       // 胜利判断
