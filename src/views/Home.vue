@@ -12,7 +12,9 @@ export default {
       status: true, // 黑:true, 白:false
       canvasDom: '',
       blackPoint: [],
-      whitePoint: []
+      whitePoint: [],
+      wNum: '',
+      hNum: ''
     }
   },
   mounted() {
@@ -23,20 +25,20 @@ export default {
       let board = document.getElementById('checkerboard')
       let width = board.offsetWidth
       let height = board.offsetHeight
-      let wNum = Math.floor(width / 30)
-      let hNum = Math.floor(height / 30)
+      this.wNum = Math.floor((width - 15) / 30)
+      this.hNum = Math.floor((height - 15) / 30)
       this.canvasDom = board.getContext('2d')
       board.width = width
       board.height = height
       this.canvasDom.strokeStyle = '#A9A9A9'
-      for (let i = 0; i < wNum + 1; i++) {
+      for (let i = 0; i <= this.wNum + 1; i++) {
         this.canvasDom.moveTo(i * 30 - 15, 15)
-        this.canvasDom.lineTo(i * 30 - 15, 30 * hNum - 15)
+        this.canvasDom.lineTo(i * 30 - 15, 30 * this.hNum + 15)
         this.canvasDom.stroke()
       }
-      for (let i = 0; i < hNum + 1; i++) {
+      for (let i = 0; i <= this.hNum + 1; i++) {
         this.canvasDom.moveTo(15, i * 30 - 15)
-        this.canvasDom.lineTo(30 * wNum - 15, i * 30 - 15)
+        this.canvasDom.lineTo(30 * this.wNum + 15, i * 30 - 15)
         this.canvasDom.stroke()
       }
     },
@@ -50,9 +52,10 @@ export default {
       this.status = true
     },
     drop(e) {
-      // 确定点位
+      // 确定点位&防止超出棋盘
       let pointX = Math.floor(e.offsetX / 30)
       let pointY = Math.floor(e.offsetY / 30)
+      if (pointX > this.wNum || pointY > this.hNum) return
       // 判断是否能落子
       const isOccupy = [...this.blackPoint, ...this.whitePoint].some(item => {
         return item.toString() === [pointX, pointY].toString()
