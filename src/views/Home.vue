@@ -13,8 +13,9 @@ export default {
       canvasDom: '',
       blackPoint: [],
       whitePoint: [],
-      wNum: '',
-      hNum: ''
+      pieceSpace: '',
+      lrPadding: '',
+      tbPadding: ''
     }
   },
   mounted() {
@@ -25,20 +26,33 @@ export default {
       let board = document.getElementById('checkerboard')
       let width = board.offsetWidth
       let height = board.offsetHeight
-      this.wNum = Math.floor((width - 15) / 30)
-      this.hNum = Math.floor((height - 15) / 30)
       this.canvasDom = board.getContext('2d')
       board.width = width
       board.height = height
       this.canvasDom.strokeStyle = '#A9A9A9'
-      for (let i = 0; i <= this.wNum + 1; i++) {
-        this.canvasDom.moveTo(i * 30 - 15, 15)
-        this.canvasDom.lineTo(i * 30 - 15, 30 * this.hNum + 15)
+      this.pieceSpace = ((width - height > 0 ? height : width) - 30) / 14
+      this.lrPadding = (width - this.pieceSpace * 14) / 2
+      this.tbPadding = (height - this.pieceSpace * 14) / 2
+      for (let i = 0; i < 15; i++) {
+        this.canvasDom.moveTo(
+          i * this.pieceSpace + this.lrPadding,
+          this.tbPadding
+        )
+        this.canvasDom.lineTo(
+          i * this.pieceSpace + this.lrPadding,
+          this.pieceSpace * 14 + this.tbPadding
+        )
         this.canvasDom.stroke()
       }
-      for (let i = 0; i <= this.hNum + 1; i++) {
-        this.canvasDom.moveTo(15, i * 30 - 15)
-        this.canvasDom.lineTo(30 * this.wNum + 15, i * 30 - 15)
+      for (let i = 0; i < 15; i++) {
+        this.canvasDom.moveTo(
+          this.lrPadding,
+          i * this.pieceSpace + this.tbPadding
+        )
+        this.canvasDom.lineTo(
+          this.pieceSpace * 14 + this.lrPadding,
+          i * this.pieceSpace + this.tbPadding
+        )
         this.canvasDom.stroke()
       }
     },
@@ -53,9 +67,13 @@ export default {
     },
     drop(e) {
       // 确定点位&防止超出棋盘
-      let pointX = Math.floor(e.offsetX / 30)
-      let pointY = Math.floor(e.offsetY / 30)
-      if (pointX > this.wNum || pointY > this.hNum) return
+      let pointX = Math.floor(
+        (e.offsetX - this.lrPadding + this.pieceSpace / 2) / this.pieceSpace
+      )
+      let pointY = Math.floor(
+        (e.offsetY - this.tbPadding + this.pieceSpace / 2) / this.pieceSpace
+      )
+      if (pointX > 15 || pointX < 0 || pointY > 15 || pointY < 0) return
       // 判断是否能落子
       const isOccupy = [...this.blackPoint, ...this.whitePoint].some(item => {
         return item.toString() === [pointX, pointY].toString()
@@ -67,9 +85,9 @@ export default {
         ? (this.canvasDom.fillStyle = '#000')
         : (this.canvasDom.fillStyle = '#fff')
       this.canvasDom.arc(
-        15 + pointX * 30,
-        15 + pointY * 30,
-        10,
+        this.lrPadding + pointX * this.pieceSpace,
+        this.tbPadding + pointY * this.pieceSpace,
+        this.pieceSpace / 3,
         0,
         2 * Math.PI,
         true
@@ -171,10 +189,9 @@ export default {
   height: 100%;
   border: 1px solid black;
   box-sizing: border-box;
-  padding: 20px;
   #checkerboard {
     width: 100%;
-    height: 100%;
+    height: 70%;
     background: #ff8c00;
   }
 }
