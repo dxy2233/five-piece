@@ -29,7 +29,7 @@ export default {
       this.canvasDom = board.getContext('2d')
       board.width = width
       board.height = height
-      this.canvasDom.strokeStyle = '#A9A9A9'
+      this.canvasDom.strokeStyle = '#5B5B5B'
       this.pieceSpace = ((width - height > 0 ? height : width) - 30) / 14
       this.lrPadding = (width - this.pieceSpace * 14) / 2
       this.tbPadding = (height - this.pieceSpace * 14) / 2
