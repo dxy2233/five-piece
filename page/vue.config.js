@@ -12,8 +12,8 @@ module.exports = {
       : 'https://fivepiece-1258577280.cos.ap-guangzhou.myqcloud.com/dist/',
   productionSourceMap: false,
   css: {
-    sourceMap: false
-  }
+    sourceMap: false,
+  },
   // devServer: {
   //   overlay: {
   //     warnings: true,

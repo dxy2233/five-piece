@@ -15,7 +15,7 @@ export default {
       whitePoint: [],
       pieceSpace: '',
       lrPadding: '',
-      tbPadding: ''
+      tbPadding: '',
     }
   },
   mounted() {
@@ -75,7 +75,7 @@ export default {
       )
       if (pointX > 15 || pointX < 0 || pointY > 15 || pointY < 0) return
       // 判断是否能落子
-      const isOccupy = [...this.blackPoint, ...this.whitePoint].some(item => {
+      const isOccupy = [...this.blackPoint, ...this.whitePoint].some((item) => {
         return item.toString() === [pointX, pointY].toString()
       })
       if (isOccupy) return
@@ -112,8 +112,8 @@ export default {
       // 横向判断
       function row() {
         const rowPoint = pointArray
-          .filter(item => item[1] === y)
-          .map(item => item[0])
+          .filter((item) => item[1] === y)
+          .map((item) => item[0])
           .sort((a, b) => a - b)
         if (rowPoint.length < 5) return
         for (let i = 0; i <= rowPoint.length - 4; i++) {
@@ -129,8 +129,8 @@ export default {
       // 纵向判断
       function col() {
         const colPoint = pointArray
-          .filter(item => item[0] === x)
-          .map(item => item[1])
+          .filter((item) => item[0] === x)
+          .map((item) => item[1])
           .sort((a, b) => a - b)
         if (colPoint.length < 5) return
         for (let i = 0; i <= colPoint.length - 4; i++) {
@@ -146,8 +146,8 @@ export default {
       // 斜下判断
       function slantDown() {
         const slantDownPoint = pointArray
-          .filter(item => x - item[0] === y - item[1])
-          .map(item => item[0])
+          .filter((item) => x - item[0] === y - item[1])
+          .map((item) => item[0])
           .sort((a, b) => a - b)
         if (slantDownPoint.length < 5) return
         for (let i = 0; i <= slantDownPoint.length - 4; i++) {
@@ -164,8 +164,8 @@ export default {
       // 斜上判断
       function slantUp() {
         const slantUpPoint = pointArray
-          .filter(item => x - item[0] === -(y - item[1]))
-          .map(item => item[0])
+          .filter((item) => x - item[0] === -(y - item[1]))
+          .map((item) => item[0])
           .sort((a, b) => a - b)
         if (slantUpPoint.length < 5) return
         for (let i = 0; i <= slantUpPoint.length - 4; i++) {
@@ -178,8 +178,8 @@ export default {
         }
       }
       if (slantUp()) return true
-    }
-  }
+    },
+  },
 }
 </script>
 
