@@ -14,10 +14,14 @@ module.exports = {
   css: {
     sourceMap: false,
   },
-  // devServer: {
-  //   overlay: {
-  //     warnings: true,
-  //     errors: true
-  //   }
-  // },
+  devServer: {
+    // 启动时打开浏览器
+    // open: true,
+    // 打开浏览器时的路径
+    // openPage: '/',
+    // 服务端口
+    port: 8999,
+    // 设置代理
+    // proxy: null
+  },
 }
